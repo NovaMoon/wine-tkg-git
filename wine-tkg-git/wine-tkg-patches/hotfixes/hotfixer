@@ -498,12 +498,7 @@ else
   elif [ "$_use_staging" = "true" ] && ( ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor 0f972e2247932f255f131792724e4796b4b2b87a HEAD ) && ( cd "${srcdir}"/"${_winesrcdir}" && ! git merge-base --is-ancestor 29d9659095fd76e303f204050ab4c85d0a0486e4 HEAD ) ) || ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor 661df7b889bb973721d09a316d87d200a31233fe HEAD ); then
     _FS_bypass_compositor_legacy="false"
     _proton_rawinput="false"
-    # Disable vr support patchset for 5.20-6.12
-    if ( cd "${srcdir}"/"${_winesrcdir}" && ! git merge-base --is-ancestor 12d33d21d33788fd46898ea42e9592d33b6e7c8e HEAD ); then
-      _steamvr_support="false"
-    else
-      _proton_branch_exp="true"
-    fi
+    _steamvr_support="false" # We'll need to update the patchset
 
     if [ "$_proton_fs_hack" = "true" ] && ( cd "${srcdir}"/"${_winesrcdir}" && ! git merge-base --is-ancestor 011fabb2c43d13402ea18b6ea7be3669b5e6c7a8 HEAD ); then
       # Using standard CRT memory allocators in the fs hack breaks, so let's selectively revert a27d5bae114eef5352b699ee38975bc8793b4dcb
@@ -530,49 +525,9 @@ else
   fi
 fi
 
-# Staging rawinput fixup from openglfreak
-if [ "$_use_staging" = "true" ] && ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor c9c7130f3cc51c1861a5ef3e703fd442e8942ba4 HEAD && ! git merge-base --is-ancestor b10ac7d8acd88850d743f854e69e03e18bd64515 HEAD ); then
-  _hotfixes+=("$_where"/wine-tkg-patches/hotfixes/staging_rawinput/c9c7130-hotfix)
-fi
-
-# Staging rawinput restoration following 1295604addb472235256a847b644855693feeecd disabling it due to upstream changes
-if [ "$_use_staging" = "true" ] && ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor 1295604addb472235256a847b644855693feeecd HEAD && ! git merge-base --is-ancestor c9c7130f3cc51c1861a5ef3e703fd442e8942ba4 HEAD ); then
-  if ( [ "$_hotfixes_no_confirm" != "true" ] && [ "$_hotfixes_no_confirm" != "ignore" ] ); then
-    warning "Hotfix: Staging's mouse rawinput support patchset is currently disabled"
-    read -rp "  Restore it?"$'\n> N/y : ' _hotfixansw_staging_rawinput;
-  fi
-  if [[ "$_hotfixansw_staging_rawinput" =~ [yY] ]] || [ "$_hotfixes_no_confirm" = "true" ] && [ "$_hotfixansw_staging_rawinput" != "false" ]; then
-    warning "Hotfix: Restore staging's mouse rawinput support patchset"
-    _hotfix_mainlinereverts+=(f7ac9f309f2964e131c8e60c5ff3a878b67b2e32 dfa11dc040f93aceec7009eeb3a57b95764c1c64 da11387857f69d8bf68de56197390052f680f283 7bc5b6800e0a78ab744532b7ed28ee04d38110f3)
-    _hotfixes+=("$_where"/wine-tkg-patches/hotfixes/staging_rawinput/staging_rawinput_restore)
-  else
-    warning "Disabling proton fs hack because it depends on staging rawinput"
-    _proton_fs_hack="false"
-  fi
-fi
-
-# Staging mfplat restoration for 6.20 following feb91195ff12074276ea3b83047d4c8f2c70d738 disabling it
-# Until we have a more robust solution upstream
-if [ "$_use_staging" = "true" ] && ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor feb91195ff12074276ea3b83047d4c8f2c70d738 HEAD ); then
-  if ( [ "$_hotfixes_no_confirm" != "true" ] && [ "$_hotfixes_no_confirm" != "ignore" ] ); then
-    warning "Hotfix: Staging's mfplat support patchset is currently disabled, breaking video playback in various games"
-    read -rp "  Restore it?"$'\n> N/y : ' _hotfixansw_staging_mfplat;
-  fi
-  if [[ "$_hotfixansw_staging_mfplat" =~ [yY] ]] || [ "$_hotfixes_no_confirm" = "true" ] && [ "$_hotfixansw_staging_mfplat" != "false" ]; then
-    warning "Hotfix: Restore staging's mfplat support patchset"
-    _hotfix_mainlinereverts+=(f26e0ba212e6164eb7535f472415334d1a9c9044 bc52edc19d8a45b9062d9568652403251872026e b3655b5be5f137281e8757db4e6985018b21c296 95ffc879882fdedaf9fdf40eb1c556a025ae5bfd 0dc309ef6ac54484d92f6558d6ca2f8e50eb28e2 25948222129fe48ac4c65a4cf093477d19d25f18 7f481ea05faf02914ecbc1932703e528511cce1a c45be242e5b6bc0a80796d65716ced8e0bc5fd41 d5154e7eea70a19fe528f0de6ebac0186651e0f3 d39747f450ad4356868f46cfda9a870347cce9dd 250f86b02389b2148471ad67bcc0775ff3b2c6ba 40ced5e054d1f16ce47161079c960ac839910cb7 8bd3c8bf5a9ea4765f791f1f78f60bcf7060eba6 87e4c289e46701c6f582e95c330eefb6fc5ec68a 51b6d45503e5849f28cce1a9aa9b7d3dba9de0fe c76418fbfd72e496c800aec28c5a1d713389287f 37e9f0eadae9f62ccae8919a92686695927e9274 dd182a924f89b948010ecc0d79f43aec83adfe65 4f10b95c8355c94e4c6f506322b80be7ae7aa174 4239f2acf77d9eaa8166628d25c1336c1599df33 3dd8eeeebdeec619570c764285bdcae82dee5868 831c6a88aab78db054beb42ca9562146b53963e7 2d0dc2d47ca6b2d4090dfe32efdba4f695b197ce)
-    for _f in "$_where"/wine-tkg-patches/hotfixes/restore_staging_mfplat/mfplat-reverts/*; do
-      _hotfixes+=("${_f%.myearlypatch}")
-    done
-    for _f in "$_where"/wine-tkg-patches/hotfixes/restore_staging_mfplat/mfplat-streaming-support/*; do
-      _hotfixes+=("${_f%.myearlypatch}")
-    done
-  fi
-fi
-
 # 6dcaff4 breaks childwindow patches (from fshack or standalone), so let's revert the changes for now
 if [ "$_proton_fs_hack" = "true" ] || [ "$_childwindow_fix" = "true" ] && ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor 6dcaff421f87a93efe18b2efe0ec64d94ed1d483 HEAD ); then
-  _hotfix_mainlinereverts+=(2adf4376d86119b8a6f7cde51c9a972564575bac 6dcaff421f87a93efe18b2efe0ec64d94ed1d483)
+  _hotfix_mainlinereverts+=(6dcaff421f87a93efe18b2efe0ec64d94ed1d483)
   _hotfixes+=("$_where"/wine-tkg-patches/hotfixes/childwindow/staging-6dcaff42)
 fi
 
@@ -598,7 +553,7 @@ if ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor 8e2df64cf89
 fi
 
 # https://github.com/ValveSoftware/Proton/issues/4322#issuecomment-941632443 - 2c01333d03153a2d3cc2622fa18a9ad323dd9edb 7b17d7081512db52ef852705445762ac4016c29f
-if [ "$_protonify" = "true" ] && ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor 7b17d7081512db52ef852705445762ac4016c29f HEAD && ! git merge-base --is-ancestor 7c046c7afd4253daa9cd8dbb6b2f466f128fecc9 HEAD ); then
+if [ "$_protonify" = "true" ] && ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor 7b17d7081512db52ef852705445762ac4016c29f HEAD ); then
   warning "Hotfix: Fix for memset performance regression"
   _hotfixes+=("$_where"/wine-tkg-patches/hotfixes/memset/memset)
 fi
@@ -870,9 +825,7 @@ fi
 if [ "$_use_staging" = "true" ] && ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor 4de079bb7247c8b849558c0f27a280a9546c5570 HEAD ); then
   if ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor 66c0fdc1590e00ce471a6c55f4d97ededd1f5aae HEAD ); then
     warning "Hotfix: Protonify staging syscall emu"
-    if ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor feb91195ff12074276ea3b83047d4c8f2c70d738 HEAD ); then
-      _hotfixes+=("$_where"/wine-tkg-patches/hotfixes/syscall_emu/protonify_stg_syscall_emu-007)
-    elif ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor 24319dc308046ed520dd2cb92f57d54f96ebec21 HEAD ); then
+    if ( cd "${srcdir}"/"${_stgsrcdir}" && git merge-base --is-ancestor 24319dc308046ed520dd2cb92f57d54f96ebec21 HEAD ); then
       _hotfixes+=("$_where"/wine-tkg-patches/hotfixes/syscall_emu/protonify_stg_syscall_emu-006)
     else
       _hotfixes+=("$_where"/wine-tkg-patches/hotfixes/syscall_emu/protonify_stg_syscall_emu-005)
@@ -948,10 +901,9 @@ fi
 
 # Fixes a regression breaking mostly some game launchers such as Riot client or Minecraft dungeon launcher - https://bugs.winehq.org/show_bug.cgi?id=49990
 # It seems to break riot client on 6.15 while star citizen launcher works fine with and without it, so let's disable on 6.15+
-if ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor bd27af974a21085cd0dc78b37b715bbcc3cfab69 HEAD ); then
+if ( cd "${srcdir}"/"${_winesrcdir}" && git merge-base --is-ancestor bd27af974a21085cd0dc78b37b715bbcc3cfab69 HEAD && ! git merge-base --is-ancestor 7f144646ffac6f3632d0c39b217dbd433c1154a0 HEAD ); then
   warning "Hotfix: Revert bd27af97 to fix many game launchers displaying empty windows (StarCitizen, EGS, Riot Client, Minecraft Dungeons etc.)"
-  _hotfix_mainlinereverts+=(b54199101fd307199c481709d4b1358ba4bcce58 dedda40e5d7b5a3bcf67eea95145810da283d7d9 bd27af974a21085cd0dc78b37b715bbcc3cfab69)
-  #_hotfixes+=("$_where"/wine-tkg-patches/hotfixes/bd27af9/bd27af9)
+  _hotfix_mainlinereverts+=(bd27af974a21085cd0dc78b37b715bbcc3cfab69)
 fi
 
 # staging 99c296e1 fs hack fixup

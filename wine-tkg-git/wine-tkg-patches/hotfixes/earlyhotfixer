@@ -1,31 +1,8 @@
 #!/bin/bash
 
 if [ -d "${srcdir}"/"${_stgsrcdir}" ]; then
-
-    if [ "$_use_staging" = "true" ] && grep -Fxq 'Disabled: True' "${srcdir}/${_stgsrcdir}/patches/mfplat-streaming-support/definition"; then
-      warning "! Staging has disabled mfplat support on this revision, so video playback will not work in games using mfplat !"
-    fi
-
     # Community Patches
-
-    # Disable the amd_fsr_fshack patch if _proton_fs_hack is disabled.
-    if [[ ${_community_patches[*]} =~ "amd_fsr_fshack.mypatch" ]] && ( [ "$_proton_fs_hack" != "true" ] || [ "$_use_staging" != "true" ] ); then
-      warning "Disabling the amd_fsr_fshack community patch because its _proton_fs_hack dependency is disabled"
-      _community_patches=$(echo $_community_patches | sed "s/amd_fsr_fshack.mypatch//g" | tr -s " ")
-    fi
-
-    # LFH
-    if ( [[ ${_community_patches[*]} =~ "0002-proton_LFH.mypatch" ]] && [ "$_use_staging" != "true" ] ) || ( [[ ${_community_patches[*]} =~ "0002-proton_LFH.mypatch" ]] && [ "$_use_staging" = "true" ] && [ "$_protonify" = "false" ] ); then
-      warning "Disabling 0002-proton_LFH.mypatch on mainline or non-protonified"
-      _community_patches=$(echo $_community_patches | sed "s/0002-proton_LFH.mypatch//g" | tr -s " ")
-    fi
-
-    # Shell32-CreateDirectoryInDestinationInFileOp-Move-multiop
-    if [[ ${_community_patches[*]} =~ "Shell32-CreateDirectoryInDestinationInFileOp-Move-multiop.mypatch" ]] && [ "$_use_staging" != "true" ]; then
-      warning "Disabling Shell32-CreateDirectoryInDestinationInFileOp-Move-multiop.mypatch on mainline"
-      _community_patches=$(echo $_community_patches | sed "s/Shell32-CreateDirectoryInDestinationInFileOp-Move-multiop.mypatch//g" | tr -s " ")
-    fi
-
+    
     # Disable Add-SORT_DIGITSAS-UMBERS-flag-to-CompareStringsEx patch if the Wine version selected already contains the commit which implements it.
     # NOTE: The patch and the commit are not the same, but this is only because the commit adds some other stuff on top of the patch.
     if [[ ${_community_patches[*]} =~ "Add-SORT_DIGITSAS-UMBERS-flag-to-CompareStringsEx.mypatch" ]] && ( git merge-base --is-ancestor 0a366f7e4a68c9375b54ace5289989bd81b65d22 $(../"$_stgsrcdir"/patches/patchinstall.sh --upstream-commit) > /dev/null ); then

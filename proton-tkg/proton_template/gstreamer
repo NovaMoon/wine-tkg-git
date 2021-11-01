@@ -93,6 +93,11 @@ _gstreamer() {
 	-Dexamples=disabled \
 	-Dtests=disabled \
 	-Dgtk_doc=disabled \
+	-Dintrospection=disabled \
+	-Dgobject-cast-checks=disabled \
+	-Dglib-asserts=disabled \
+	-Dglib-checks=disabled \
+	-Dnls=disabled \
 	-Dbenchmarks=disabled
 
   ninja -C "$_nowhere"/Proton/build/gst-orc64 install
@@ -128,6 +133,7 @@ _gstreamer() {
 	--libdir="lib64" \
 	--buildtype=plain \
 	-Dpkg_config_path=$_nowhere/gst/lib64/pkgconfig \
+	-Daddr=disabled \
 	-Dalsa=disabled \
 	-Daudiomixer=disabled \
 	-Daudiorate=disabled \
@@ -153,11 +159,13 @@ _gstreamer() {
 	-Dtools=disabled \
 	-Dexamples=disabled \
 	-Dtests=disabled \
+	-Dgtk_doc=disabled \
 	-Dintrospection=disabled \
 	-Dgobject-cast-checks=disabled \
 	-Dglib-asserts=disabled \
 	-Dglib-checks=disabled \
-	-Dnls=disabled
+	-Dnls=disabled \
+	-Dbenchmarks=disabled
 
   ninja -C "$_nowhere"/Proton/build/gstbase64 install
 
@@ -214,12 +222,16 @@ _gstreamer() {
 	-Dwavenc=disabled \
 	-Dximagesrc=disabled \
 	-Dy4m=disabled \
+	-Dtools=disabled \
 	-Dexamples=disabled \
 	-Dtests=disabled \
+	-Dgtk_doc=disabled \
+	-Dintrospection=disabled \
 	-Dgobject-cast-checks=disabled \
 	-Dglib-asserts=disabled \
 	-Dglib-checks=disabled \
-	-Dnls=disabled
+	-Dnls=disabled \
+	-Dbenchmarks=disabled
 
   ninja -C "$_nowhere"/Proton/build/gstgood64 install
 
@@ -233,6 +245,8 @@ _gstreamer() {
 	-Dpkg_config_path=$_nowhere/gst/lib64/pkgconfig \
 	-Dfbdev=disabled \
 	-Ddecklink=disabled \
+	-Dlinksys=disabled \
+	-Dstatic=disabled \
 	-Ddts=disabled \
 	-Dfaac=disabled \
 	-Dfaad=disabled \
@@ -249,11 +263,13 @@ _gstreamer() {
 	-Dx265=disabled \
 	-Dexamples=disabled \
 	-Dtests=disabled \
+	-Dgtk_doc=disabled \
 	-Dintrospection=disabled \
 	-Dgobject-cast-checks=disabled \
 	-Dglib-asserts=disabled \
 	-Dglib-checks=disabled \
-	-Dnls=disabled
+	-Dnls=disabled \
+	-Dbenchmarks=disabled
 
   ninja -C "$_nowhere"/Proton/build/gstbad64 install
 
@@ -269,11 +285,15 @@ _gstreamer() {
 	-Dglib-asserts='disabled' \
 	-Dglib-checks='disabled' \
 	-Ddoc='disabled' \
+	-Dexamples=disabled \
 	-Dtests=disabled \
+	-Dgtk_doc=disabled \
+	-Dintrospection=disabled \
 	-Dgobject-cast-checks=disabled \
 	-Dglib-asserts=disabled \
 	-Dglib-checks=disabled \
-	-Dnls=disabled
+	-Dnls=disabled \
+	-Dbenchmarks=disabled
 
   ninja -C "$_nowhere"/Proton/build/gstugly64 install
 
@@ -288,7 +308,16 @@ _gstreamer() {
 	--libdir="lib64" \
 	--buildtype=plain \
 	-Dpkg_config_path=$_nowhere/gst/lib64/pkgconfig \
-	-Ddoc='disabled'
+	-Ddoc='disabled' \
+	-Dexamples=disabled \
+	-Dtests=disabled \
+	-Dgtk_doc=disabled \
+	-Dintrospection=disabled \
+	-Dgobject-cast-checks=disabled \
+	-Dglib-asserts=disabled \
+	-Dglib-checks=disabled \
+	-Dnls=disabled \
+	-Dbenchmarks=disabled
 
   ninja -C "$_nowhere"/Proton/build/gstlibav64 install
 
@@ -331,6 +360,11 @@ _gstreamer() {
         -Dexamples=disabled \
         -Dtests=disabled \
         -Dgtk_doc=disabled \
+        -Dintrospection=disabled \
+        -Dgobject-cast-checks=disabled \
+        -Dglib-asserts=disabled \
+        -Dglib-checks=disabled \
+        -Dnls=disabled \
         -Dbenchmarks=disabled
 
     ninja -C "$_nowhere"/Proton/build/gst-orc32 install
@@ -364,6 +398,7 @@ _gstreamer() {
     meson "$_nowhere"/Proton/build/gstbase32 --prefix="$_nowhere/gst" \
         --libdir="lib" \
         --buildtype=plain \
+        -Daddr=disabled \
         -Dalsa=disabled \
         -Daudiomixer=disabled \
         -Daudiorate=disabled \
@@ -389,11 +424,13 @@ _gstreamer() {
         -Dtools=disabled \
         -Dexamples=disabled \
         -Dtests=disabled \
+        -Dgtk_doc=disabled \
         -Dintrospection=disabled \
         -Dgobject-cast-checks=disabled \
         -Dglib-asserts=disabled \
         -Dglib-checks=disabled \
-        -Dnls=disabled
+        -Dnls=disabled \
+        -Dbenchmarks=disabled
 
     ninja -C "$_nowhere"/Proton/build/gstbase32 install
 
@@ -449,12 +486,16 @@ _gstreamer() {
         -Dwavenc=disabled \
         -Dximagesrc=disabled \
         -Dy4m=disabled \
+        -Dtools=disabled \
         -Dexamples=disabled \
         -Dtests=disabled \
+        -Dgtk_doc=disabled \
+        -Dintrospection=disabled \
         -Dgobject-cast-checks=disabled \
         -Dglib-asserts=disabled \
         -Dglib-checks=disabled \
-        -Dnls=disabled
+        -Dnls=disabled \
+        -Dbenchmarks=disabled
 
     ninja -C "$_nowhere"/Proton/build/gstgood32 install
 
@@ -466,6 +507,8 @@ _gstreamer() {
         --buildtype=plain \
         -Dfbdev=disabled \
         -Ddecklink=disabled \
+        -Dlinksys=disabled \
+        -Dstatic=disabled \
         -Ddts=disabled \
         -Dfaac=disabled \
         -Dfaad=disabled \
@@ -498,17 +541,15 @@ _gstreamer() {
         -Dzxing=disabled \
         -Dwebrtc=disabled \
         -Dwebrtcdsp=disabled \
-        -Dopenmpt=disabled \
-        -Dbluez=disabled \
-        -Dbs2b=disabled \
-        -Dtimecode=disabled \
         -Dexamples=disabled \
         -Dtests=disabled \
+        -Dgtk_doc=disabled \
         -Dintrospection=disabled \
         -Dgobject-cast-checks=disabled \
         -Dglib-asserts=disabled \
         -Dglib-checks=disabled \
-        -Dnls=disabled
+        -Dnls=disabled \
+        -Dbenchmarks=disabled
 
     ninja -C "$_nowhere"/Proton/build/gstbad32 install
 
@@ -522,11 +563,15 @@ _gstreamer() {
         -Dglib-asserts='disabled' \
         -Dglib-checks='disabled' \
         -Ddoc='disabled' \
+        -Dexamples=disabled \
         -Dtests=disabled \
+        -Dgtk_doc=disabled \
+        -Dintrospection=disabled \
         -Dgobject-cast-checks=disabled \
         -Dglib-asserts=disabled \
         -Dglib-checks=disabled \
-        -Dnls=disabled
+        -Dnls=disabled \
+        -Dbenchmarks=disabled
 
     ninja -C "$_nowhere"/Proton/build/gstugly32 install
 
@@ -536,7 +581,16 @@ _gstreamer() {
     meson "$_nowhere"/Proton/build/gstlibav32 --prefix="$_nowhere/gst" \
         --libdir="lib" \
         --buildtype=plain \
-        -Ddoc='disabled'
+        -Ddoc='disabled' \
+        -Dexamples=disabled \
+        -Dtests=disabled \
+        -Dgtk_doc=disabled \
+        -Dintrospection=disabled \
+        -Dgobject-cast-checks=disabled \
+        -Dglib-asserts=disabled \
+        -Dglib-checks=disabled \
+        -Dnls=disabled \
+        -Dbenchmarks=disabled
 
     ninja -C "$_nowhere"/Proton/build/gstlibav32 install
 
