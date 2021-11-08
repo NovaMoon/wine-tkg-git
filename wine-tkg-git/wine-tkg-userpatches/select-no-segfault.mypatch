@@ -1,0 +1,20 @@
+diff --git a/dlls/ws2_32/socket.c b/dlls/ws2_32/socket.c
+index a29d693d1b2..99cce0645e1 100644
+--- a/dlls/ws2_32/socket.c
++++ b/dlls/ws2_32/socket.c
+@@ -2407,6 +2407,15 @@ int WINAPI select( int count, fd_set *read_ptr, fd_set *write_ptr,
+ 
+     TRACE( "read %p, write %p, except %p, timeout %p\n", read_ptr, write_ptr, except_ptr, timeout );
+ 
++    if ((read_ptr && (IsBadReadPtr(read_ptr, sizeof(*read_ptr)) || IsBadWritePtr(read_ptr, sizeof(*read_ptr))))
++        || (write_ptr && (IsBadReadPtr(write_ptr, sizeof(*write_ptr)) || IsBadWritePtr(write_ptr, sizeof(*write_ptr))))
++        || (except_ptr && (IsBadReadPtr(except_ptr, sizeof(*except_ptr)) || IsBadWritePtr(except_ptr, sizeof(*except_ptr))))
++        || (timeout && IsBadReadPtr(timeout, sizeof(*timeout))))
++    {
++        SetLastError( WSAEFAULT );
++        return -1;
++    }
++
+     FD_ZERO( &read );
+     FD_ZERO( &write );
+     FD_ZERO( &except );
